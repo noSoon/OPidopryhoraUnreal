@@ -7,7 +7,9 @@
 ATestMyActor::ATestMyActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Static Mesh Component");
 
 }
 
@@ -15,6 +17,8 @@ ATestMyActor::ATestMyActor()
 void ATestMyActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UE_LOG(LogTemp, Display, TEXT("TestActor"));
 	
 }
 

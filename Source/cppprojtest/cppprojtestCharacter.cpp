@@ -9,6 +9,8 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystemComponent.h"
+#include "TestAttributeSet.h"
 #include "InputActionValue.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -52,6 +54,12 @@ AcppprojtestCharacter::AcppprojtestCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("GASComponent");
+
+	AttributeSet = CreateDefaultSubobject<UTestAttributeSet>("AttributeSet");
+
+	AbilitySystemComponent->AddAttributeSetSubobject(AttributeSet);
 }
 
 void AcppprojtestCharacter::BeginPlay()
@@ -67,6 +75,41 @@ void AcppprojtestCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	if (AbilitySystemComponent) {
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+		if (AttributeSet) {
+			AttributeSet->InitMaxHealth(100.0f);
+			AttributeSet->InitHealth(50.0f);
+			AttributeSet->InitArmour(20.0f);
+			UE_LOG(LogTemp, Display, TEXT("Character Health = %f"), AttributeSet->GetHealth());
+			UE_LOG(LogTemp, Display, TEXT("Character Armour = %f"), AttributeSet->GetArmour());
+		}
+		else { UE_LOG(LogTemp, Display, TEXT("No Attributes Added")); }
+		if (TestAbility) {
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(TestAbility, 1, INDEX_NONE, this));
+			UE_LOG(LogTemp, Warning, TEXT("Ability works"));
+		}
+	}
+}
+
+void AcppprojtestCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (AttributeSet && GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(2, 0.0f, FColor::Green,
+			FString::Printf(TEXT("Armour: %.0f"), AttributeSet->GetArmour()));
+		GEngine->AddOnScreenDebugMessage(1, 0.0f, FColor::Green,
+			FString::Printf(TEXT("Health: %.0f"), AttributeSet->GetHealth()));
+	}
+}
+
+UAbilitySystemComponent* AcppprojtestCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "AbilitySystemInterface.h"
 #include "cppprojtestCharacter.generated.h"
 
 class USpringArmComponent;
@@ -15,8 +16,11 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
+class UAbilitySystemComponent;
+class UTestAttributeSet;
+
 UCLASS(config=Game)
-class AcppprojtestCharacter : public ACharacter
+class AcppprojtestCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -55,6 +59,15 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Abilities")
+	UAbilitySystemComponent* AbilitySystemComponent;
+
+	UPROPERTY()
+	UTestAttributeSet* AttributeSet;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
+	TSubclassOf<class UGameplayAbility> TestAbility;
 			
 
 protected:
@@ -64,10 +77,14 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Tick(float DeltaTime) override;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };
 

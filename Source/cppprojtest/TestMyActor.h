@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TestMyActor.generated.h"
 
+
 UCLASS()
 class CPPPROJTEST_API ATestMyActor : public AActor
 {
@@ -23,4 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UStaticMeshComponent* Mesh;
 };
