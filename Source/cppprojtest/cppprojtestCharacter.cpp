@@ -59,7 +59,6 @@ AcppprojtestCharacter::AcppprojtestCharacter()
 
 	AttributeSet = CreateDefaultSubobject<UTestAttributeSet>("AttributeSet");
 
-	AbilitySystemComponent->AddAttributeSetSubobject(AttributeSet);
 }
 
 void AcppprojtestCharacter::BeginPlay()
